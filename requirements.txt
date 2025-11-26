@@ -1,8 +1,9 @@
+streamlit==1.26.1
+opencv-python-headless==4.8.0.76
 ultralytics==8.1.0
-opencv-python-headless
-numpy
-easyocr
-Pillow
-streamlit
-torch
+torch>=1.13.0
 torchvision
+numpy
+pillow
+easyocr
+reportlab
