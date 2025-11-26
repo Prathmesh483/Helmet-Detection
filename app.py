@@ -3,41 +3,44 @@ import streamlit as st
 import cv2
 import numpy as np
 import tempfile
-from ultralytics import YOLO  # import YOLO
-import torch  # ensure torch is imported
+from ultralytics import YOLO
+import torch
 
-from utils import draw_boxes
+# utils
+from utils.draw import draw_boxes
 
 st.set_page_config(page_title="Traffic AI System", layout="wide")
 st.title("🚦 Traffic AI Analysis System (College Demo)")
 
-# Lazy instantiate detectors
+# Lazy instantiate detectors inside try/except to avoid app crash
 @st.cache_resource
 def get_models():
-    helmet = None
-    vehicle = None
+    helmet_model = None
+    vehicle_model = None
 
     try:
-        helmet = YOLO("yolov8n.pt")  # Streamlit Cloud will download from ultralytics
+        # Load YOLOv8 from cloud with weights_only=False
+        helmet_model = YOLO("yolov8n.pt", weights_only=False)
     except Exception as e:
         st.error("HelmetDetector initialization error: " + str(e))
-        helmet = None
+        helmet_model = None
 
     try:
-        vehicle = YOLO("yolov8n.pt")  # same YOLO model for demo
+        vehicle_model = YOLO("yolov8n.pt", weights_only=False)
     except Exception as e:
         st.error("VehicleDetector initialization error: " + str(e))
-        vehicle = None
+        vehicle_model = None
 
-    return helmet, vehicle
+    return helmet_model, vehicle_model
 
 helmet_model, vehicle_model = get_models()
 
 # Sidebar settings
+st.sidebar.header("Settings")
 conf = st.sidebar.slider("Detection confidence", 0.1, 0.9, 0.25)
 
-# Image uploader
-uploaded = st.file_uploader("Upload an image (jpg, png)", type=["jpg", "jpeg", "png"])
+# File uploader
+uploaded = st.file_uploader("Upload an image (jpg, png)", type=["jpg","jpeg","png"])
 if uploaded is None:
     st.info("Upload an image to run detection.")
 else:
@@ -50,16 +53,17 @@ else:
     if frame is None:
         st.error("Failed to read the uploaded image.")
     else:
-        # Vehicle detection
+        # Run vehicle detection
         vehicles = []
         if vehicle_model:
             try:
                 result = vehicle_model(frame, conf=conf)
-                vehicles = result[0].boxes.xyxy.tolist()
+                vehicles = result[0].boxes.xyxy.tolist()  # bounding boxes
             except Exception as e:
                 st.error("Vehicle detection error: " + str(e))
+                vehicles = []
 
-        # Helmet detection
+        # Run helmet detection
         helmets = []
         if helmet_model:
             try:
@@ -67,7 +71,8 @@ else:
                 helmets = result[0].boxes.xyxy.tolist()
             except Exception as e:
                 st.warning("Helmet detection failed: " + str(e))
+                helmets = []
 
-        # Draw results
+        # Draw bounding boxes
         out_img = draw_boxes(frame, vehicles=vehicles, helmets=helmets, plates=[])
         st.image(out_img, use_column_width=True, caption="Processed image")
