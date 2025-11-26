@@ -18,27 +18,24 @@ def get_models():
     helmet = None
     vehicle = None
 
-    # Use cloud-pretrained YOLOv8 models
     try:
-        helmet = YOLO("yolov8n.pt")  # generic detection; replace with helmet-specific if trained and hosted
+        # Allowlist DetectionModel class for PyTorch >=2.6
+        with torch.serialization.add_safe_globals([ultralytics.nn.tasks.DetectionModel]):
+            helmet = YOLO("yolov8n.pt")  # cloud download
     except Exception as e:
         st.error("HelmetDetector initialization error: " + str(e))
         helmet = None
 
     try:
-        vehicle = YOLO("yolov8n.pt")  # generic object detection
+        with torch.serialization.add_safe_globals([ultralytics.nn.tasks.DetectionModel]):
+            vehicle = YOLO("yolov8n.pt")  # cloud download
     except Exception as e:
         st.error("VehicleDetector initialization error: " + str(e))
         vehicle = None
 
-    # Optional: placeholder for PlateReader, TrafficCounter, EmissionCalculator
-    plate_reader = None
-    traffic_counter = None
-    emission_calc = None
+    return helmet, vehicle, None, None, None
 
-    return helmet, vehicle, plate_reader, emission_calc, traffic_counter
-
-helmet_model, vehicle_model, plate_reader, emission_calc, traffic_counter = get_models()
+get_models()
 
 st.sidebar.header("Settings")
 conf = st.sidebar.slider("Detection confidence", 0.1, 0.9, 0.25)
