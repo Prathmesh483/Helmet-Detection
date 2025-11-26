@@ -5,12 +5,18 @@ import numpy as np
 import tempfile
 import os
 
-from detection.helmet_detector import HelmetDetector
-from detection.vehicle_detector import VehicleDetector
-from ocr.plate_reader import PlateReader
-from analysis.traffic_counter import TrafficCounter
-from analysis.emission_calculator import EmissionCalculator
-from utils.draw import draw_boxes
+from detection import HelmetDetector, VehicleDetector
+from ocr import PlateReader
+from analysis import TrafficCounter, EmissionCalculator
+from utils import draw_boxes
+
+
+# from detection.helmet_detector import HelmetDetector
+# from detection.vehicle_detector import VehicleDetector
+# from ocr.plate_reader import PlateReader
+# from analysis.traffic_counter import TrafficCounter
+# from analysis.emission_calculator import EmissionCalculator
+# from utils.draw import draw_boxes
 
 st.set_page_config(page_title="Traffic AI System", layout="wide")
 st.title("🚦 Traffic AI Analysis System (College Demo)")
