@@ -1,6 +1,7 @@
-# INSERT file utils HERE
-import os
+import tempfile
 
-def ensure_dir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+def save_temp_file(uploaded_file, suffix=".jpg"):
+    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+    tmp_file.write(uploaded_file.getbuffer())
+    tmp_file.flush()
+    return tmp_file.name
