@@ -18,6 +18,7 @@ st.set_page_config(page_title="Traffic AI System", layout="wide")
 st.title("🚦 Traffic AI Analysis System (College Demo)")
 
 # Lazy instantiate detectors inside try/except to avoid app crash
+# Lazy instantiate detectors inside try/except to avoid app crash
 @st.cache_resource
 def get_models():
     helmet = None
@@ -40,7 +41,10 @@ def get_models():
 
     return helmet, vehicle, None, None, None
 
-get_models()
+
+# ← You were missing this line!
+helmet_model, vehicle_model, plate_reader, emission_calc, traffic_counter = get_models()
+
 
 st.sidebar.header("Settings")
 conf = st.sidebar.slider("Detection confidence", 0.1, 0.9, 0.25)
