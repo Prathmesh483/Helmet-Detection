@@ -1,9 +1,8 @@
-# INSERT requirements HERE
 ultralytics==8.1.0
 opencv-python-headless
 numpy
-Pillow
 easyocr
+Pillow
 streamlit
 torch
 torchvision

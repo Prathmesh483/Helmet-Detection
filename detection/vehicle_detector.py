@@ -1,9 +1,8 @@
 from ultralytics import YOLO
-import cv2
 
 class VehicleDetector:
     def __init__(self):
-        self.model = YOLO("models/yolo_vehicle.pt")
+        self.model = YOLO("yolov8n.pt")
 
     def detect(self, img):
         results = self.model.predict(img)[0]
