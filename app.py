@@ -3,8 +3,13 @@ import streamlit as st
 import cv2
 import numpy as np
 import tempfile
+import streamlit as st
+# from ultralytics import YOLO  
+import ultralytics.nn.tasks
+import torch  # Make sure torch is imported
 
 from ultralytics import YOLO
+
 
 # utils
 from utils import draw_boxes
